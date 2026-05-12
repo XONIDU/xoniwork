@@ -1,6 +1,4 @@
-Aquí tienes el archivo README.md para **XONIWORK**:
 
-```markdown
 # 💼 XONIWORK v1.0.0
 
 **Simulador de Escritura Automática** – Emula trabajo de escritura manual en computadora con errores controlados y parametrización web.
