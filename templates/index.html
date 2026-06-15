@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XONIWORK · Escritura Automática para Trabajo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #000000;
+            color: #00ff00;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Barra de navegación */
+        nav {
+            background-color: #000000;
+            border-bottom: 1px solid #00ff00;
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        nav a {
+            color: #00ff00;
+            text-decoration: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 18px;
+            font-weight: 500;
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background-color: #00ff00;
+            color: #000000;
+            border-radius: 8px;
+        }
+
+        /* Contenedor principal */
+        .container {
+            width: 85%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #ffffff;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #00ff00;
+            padding-left: 15px;
+        }
+
+        h1 {
+            text-align: center;
+            border-left: none;
+            font-size: 2.8rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitulo {
+            text-align: center;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #bbffbb;
+        }
+
+        /* Tarjetas / secciones */
+        .card {
+            background: #0a0a0a;
+            border: 1px solid #00ff00;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 15px rgba(0,255,0,0.2);
+        }
+
+        .grid-2, .grid-3 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            justify-content: center;
+        }
+
+        .grid-2 > div, .grid-3 > div {
+            flex: 1 1 280px;
+            background: #0f0f0f;
+            border-radius: 12px;
+            padding: 18px;
+            border: 1px solid #2a2a2a;
+        }
+
+        .badge {
+            background-color: #00ff00;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-enlace {
+            display: inline-block;
+            background: #00ff00;
+            color: #000;
+            padding: 8px 18px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 5px;
+            transition: 0.3s;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .btn-enlace:hover {
+            background: #ffffff;
+            color: #000;
+            transform: scale(1.02);
+        }
+
+        .btn-peligro {
+            background: #aa3333;
+            color: white;
+        }
+        .btn-peligro:hover {
+            background: #ff5555;
+        }
+
+        .config-panel {
+            background: #0d0d0d;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        .config-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .config-group {
+            flex: 1;
+            min-width: 150px;
+        }
+        .config-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #88ff88;
+            font-size: 0.9em;
+        }
+        .config-group input, .config-group select {
+            width: 100%;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1em;
+        }
+        .upload-area {
+            background: #0d0d0d;
+            border: 2px dashed #444;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #00ff00;
+            background: #111;
+        }
+        .info-text {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff9d, #00bcd4);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: bold;
+        }
+        .terminal {
+            background: #0a0a0a;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        .terminal-line {
+            padding: 4px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            border-top: 1px solid #2a6b2a;
+            color: #88ff88;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            nav a {
+                margin: 0 5px;
+                padding: 8px 12px;
+                font-size: 14px;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="#inicio">XONIWORK</a>
+    <a href="#config">Configuración</a>
+    <a href="#subir">Subir archivo</a>
+    <a href="#escritura">Escritura</a>
+    <a href="https://xonipage.xonidu.com/">XONIDU</a>
+</nav>
+
+<div class="container" id="inicio">
+    <h1>XONIWORK 2026</h1>
+    <div class="subtitulo">✍️ Simulador de Escritura Automática · Emula trabajo humano con errores controlados</div>
+
+    <!-- Panel de configuración -->
+    <div class="card" id="config">
+        <h2>⚙️ Parámetros de simulación</h2>
+        <div class="config-panel">
+            <div class="config-row">
+                <div class="config-group">
+                    <label>Velocidad (segundos por carácter)</label>
+                    <input type="number" id="velocidad" step="0.01" min="0.01" max="1" value="0.05">
+                </div>
+                <div class="config-group">
+                    <label>Nivel de errores</label>
+                    <select id="errorNivel">
+                        <option value="0">0% - Sin errores</option>
+                        <option value="1">2% - Leves</option>
+                        <option value="2">4% - Moderados</option>
+                        <option value="3">6% - Muchos</option>
+                        <option value="4">8% - Máximos</option>
+                    </select>
+                </div>
+                <div class="config-group">
+                    <label>Espera inicial (segundos)</label>
+                    <input type="number" id="esperaInicial" step="0.5" min="0" max="10" value="3">
+                </div>
+            </div>
+            <div class="config-row">
+                <button class="btn-enlace" id="applyConfigBtn">Aplicar configuración</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subir archivo -->
+    <div class="card" id="subir">
+        <h2>📄 Subir documento</h2>
+        <div class="upload-area" id="uploadArea">
+            <div style="font-size: 2rem;">📂</div>
+            <div>Arrastra o haz clic para subir archivo</div>
+            <div style="font-size: 0.8rem; color: #aaa;">Formatos: .txt, .pdf, .docx</div>
+            <input type="file" id="fileInput" accept=".txt,.pdf,.docx" style="display: none;">
+        </div>
+        <div id="infoPanel" style="display: none;">
+            <h3>Texto a escribir</h3>
+            <div class="info-text" id="textoPreview"></div>
+            <div class="progress-bar" id="progressBar" style="display: none;">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles de escritura -->
+    <div class="card" id="escritura">
+        <h2>🎮 Control de escritura</h2>
+        <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;" id="actionControls" style="display: none;">
+            <button class="btn-enlace" id="startBtn">▶ INICIAR ESCRITURA</button>
+            <button class="btn-enlace btn-peligro" id="stopBtn" style="display: none;">⏹ DETENER</button>
+            <button class="btn-enlace" id="resetBtn">🗑 LIMPIAR TODO</button>
+        </div>
+        <div class="terminal" id="terminal">
+            <div class="terminal-line">> Sistema listo. Sube un archivo y configura los parámetros.</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 XONIDU · Código abierto libre · Innovación tecnológica con impacto social</p>
+        <p>Hecho en México 🇲🇽 · #SomosXONINDU</p>
+    </footer>
+</div>
+
+<script>
+    // Variables globales
+    let textoActual = '';
+    let eventSource = null;
+    let escrituraActiva = false;
+
+    // Elementos DOM
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const infoPanel = document.getElementById('infoPanel');
+    const textoPreview = document.getElementById('textoPreview');
+    const actionControls = document.getElementById('actionControls');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const progressBar = document.getElementById('progressBar');
+    const progressFill = document.getElementById('progressFill');
+    const terminal = document.getElementById('terminal');
+    const applyConfigBtn = document.getElementById('applyConfigBtn');
+    const velocidadInput = document.getElementById('velocidad');
+    const errorNivelSelect = document.getElementById('errorNivel');
+    const esperaInicialInput = document.getElementById('esperaInicial');
+
+    // Funciones auxiliares
+    function addTerminalLine(message, type = 'info') {
+        const line = document.createElement('div');
+        line.className = 'terminal-line';
+        const timestamp = new Date().toLocaleTimeString();
+        let color = '#00ff9d';
+        if (type === 'error') color = '#ff416c';
+        if (type === 'success') color = '#00ff9d';
+        if (type === 'warning') color = '#ff9800';
+        line.style.color = color;
+        line.textContent = `[${timestamp}] ${message}`;
+        terminal.appendChild(line);
+        terminal.scrollTop = terminal.scrollHeight;
+        while (terminal.children.length > 50) terminal.removeChild(terminal.firstChild);
+    }
+
+    function showStatus(message, type) {
+        const statusDiv = document.createElement('div');
+        statusDiv.className = 'status-temp';
+        statusDiv.style.position = 'fixed';
+        statusDiv.style.bottom = '20px';
+        statusDiv.style.right = '20px';
+        statusDiv.style.background = '#0d0d0d';
+        statusDiv.style.borderLeft = `4px solid ${type === 'error' ? '#ff416c' : '#00ff9d'}`;
+        statusDiv.style.padding = '15px 20px';
+        statusDiv.style.borderRadius = '8px';
+        statusDiv.style.zIndex = '1000';
+        statusDiv.style.color = '#fff';
+        statusDiv.innerText = message;
+        document.body.appendChild(statusDiv);
+        setTimeout(() => statusDiv.remove(), 3000);
+    }
+
+    // Subir archivo
+    uploadArea.addEventListener('click', () => fileInput.click());
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#00ff00';
+    });
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.style.borderColor = '#444';
+    });
+    uploadArea.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        uploadArea.style.borderColor = '#444';
+        const file = e.dataTransfer.files[0];
+        if (file) await uploadFile(file);
+    });
+    fileInput.addEventListener('change', async (e) => {
+        if (e.target.files[0]) await uploadFile(e.target.files[0]);
+    });
+
+    async function uploadFile(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        addTerminalLine(`Subiendo archivo: ${file.name}`, 'info');
+        try {
+            const response = await fetch('/upload', { method: 'POST', body: formData });
+            const data = await response.json();
+            if (data.success) {
+                textoActual = data.texto;
+                textoPreview.textContent = textoActual.substring(0, 500) + (textoActual.length > 500 ? '...' : '');
+                infoPanel.style.display = 'block';
+                actionControls.style.display = 'flex';
+                addTerminalLine(`Archivo cargado: ${data.longitud} caracteres`, 'success');
+            } else {
+                addTerminalLine(`Error: ${data.error}`, 'error');
+            }
+        } catch (error) {
+            addTerminalLine(`Error de conexión: ${error}`, 'error');
+        }
+    }
+
+    // Aplicar configuración al servidor
+    applyConfigBtn.addEventListener('click', async () => {
+        const config = {
+            velocidad: parseFloat(velocidadInput.value),
+            error_nivel: parseInt(errorNivelSelect.value),
+            espera_inicial: parseFloat(esperaInicialInput.value)
+        };
+        try {
+            await fetch('/configurar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(config)
+            });
+            addTerminalLine(`Configuración aplicada: velocidad=${config.velocidad}s, errores=${config.error_nivel}`, 'success');
+        } catch (error) {
+            addTerminalLine(`Error al aplicar configuración`, 'error');
+        }
+    });
+
+    // Iniciar escritura
+    startBtn.addEventListener('click', async () => {
+        if (!textoActual) {
+            showStatus('Sube un archivo primero', 'error');
+            return;
+        }
+        if (escrituraActiva) return;
+        escrituraActiva = true;
+        startBtn.disabled = true;
+        stopBtn.style.display = 'inline-block';
+        progressBar.style.display = 'block';
+        progressFill.style.width = '0%';
+        progressFill.textContent = '0%';
+
+        if (eventSource) eventSource.close();
+        eventSource = new EventSource(`/iniciar_escritura?texto=${encodeURIComponent(textoActual)}`);
+
+        eventSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            if (data.type === 'waiting') {
+                addTerminalLine(data.message, 'warning');
+            } else if (data.type === 'start') {
+                addTerminalLine(`Escribiendo ${data.total} caracteres...`, 'info');
+            } else if (data.type === 'detenido') {
+                addTerminalLine(`Escritura detenida. Procesados: ${data.procesados} caracteres`, 'warning');
+                finalizarEscritura();
+            } else if (data.type === 'completado') {
+                addTerminalLine(`Escritura completada! ${data.total} caracteres escritos`, 'success');
+                progressFill.style.width = '100%';
+                progressFill.textContent = '100%';
+                finalizarEscritura();
+                showStatus('Escritura completada', 'success');
+            } else if (data.type === 'error') {
+                addTerminalLine(`Error: ${data.message}`, 'error');
+                finalizarEscritura();
+            }
+        };
+        eventSource.onerror = () => {
+            addTerminalLine('Conexión perdida', 'error');
+            finalizarEscritura();
+        };
+    });
+
+    function finalizarEscritura() {
+        escrituraActiva = false;
+        startBtn.disabled = false;
+        stopBtn.style.display = 'none';
+        if (eventSource) {
+            eventSource.close();
+            eventSource = null;
+        }
+    }
+
+    stopBtn.addEventListener('click', async () => {
+        await fetch('/detener', { method: 'POST' });
+        addTerminalLine('Deteniendo escritura...', 'warning');
+    });
+
+    resetBtn.addEventListener('click', async () => {
+        if (eventSource) eventSource.close();
+        escrituraActiva = false;
+        startBtn.disabled = false;
+        stopBtn.style.display = 'none';
+        textoActual = '';
+        infoPanel.style.display = 'none';
+        actionControls.style.display = 'none';
+        progressBar.style.display = 'none';
+        textoPreview.textContent = '';
+        fileInput.value = '';
+        await fetch('/reset', { method: 'POST' });
+        addTerminalLine('Datos limpiados', 'info');
+    });
+</script>
+</body>
+</html>
