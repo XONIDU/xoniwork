@@ -48,6 +48,23 @@ cd xoniwork
 python start.py
 ```
 
+### Opción 2 – Comando `xoninstall` (recomendado para futuras herramientas XONI)
+
+Agrega la siguiente función a tu `~/.bashrc` con un solo comando:
+
+```bash
+echo 'xoninstall() { if [ -z "$1" ]; then echo "Uso: xoninstall <repo>"; echo "Ej: xoninstall xoniran"; else git clone "https>
+```
+
+Luego simplemente escribe:
+
+```bash
+xoninstall xoniwork
+cd xoniwork
+pip install -r requisitos.txt
+python start.py
+```
+
 El lanzador automáticamente:
 - Detecta tu sistema operativo (Windows/Linux/macOS)
 - Instala pip si no está disponible
