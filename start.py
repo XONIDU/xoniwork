@@ -146,7 +146,7 @@ def print_banner():
 ║               Desarrollado por: Darian Alberto           ║
 ║                      Camacho Salas                       ║
 ║                      Organizacion: XONIDU                ║
-║                      #Somos XONINDU                      ║
+║                                                          ║
 ╚══════════════════════════════════════════════════════════╝{Colors.END}
     """
     print(banner)
