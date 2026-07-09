@@ -3,6 +3,11 @@ title XONIWORK 2026 - Simulador de Escritura Automatica
 color 0A
 
 :: ============================================================
+:: IR AL DIRECTORIO DONDE ESTA EL SCRIPT .BAT
+:: ============================================================
+cd /d "%~dp0"
+
+:: ============================================================
 :: SOLICITAR PERMISOS DE ADMINISTRADOR
 :: ============================================================
 net session >nul 2>&1
@@ -17,6 +22,20 @@ if %errorlevel% neq 0 (
 )
 
 :: ============================================================
+:: VERIFICAR QUE start.py EXISTE
+:: ============================================================
+if not exist "%~dp0start.py" (
+    echo [ERROR] No se encuentra start.py en esta carpeta
+    echo.
+    echo Ruta actual: %~dp0
+    echo.
+    echo Asegurate de que start.py esta en la misma carpeta que este .bat
+    echo.
+    pause
+    exit /B
+)
+
+:: ============================================================
 :: EJECUTAR start.py CON PERMISOS DE ADMINISTRADOR
 :: ============================================================
 cls
@@ -27,10 +46,13 @@ echo ============================================================
 echo.
 echo [OK] Permisos de administrador obtenidos
 echo.
+echo [INFO] Directorio de trabajo: %~dp0
+echo.
 echo Iniciando XONIWORK...
 echo.
 echo [INFO] Simulador de escritura automatica para emular trabajo
 echo [INFO] Accede a: http://localhost:5000
+echo [INFO] Desde tu red local: http://<TU-IP>:5000
 echo.
 echo [INFO] Configuracion disponible:
 echo   - Velocidad de escritura (0.01s - 1s por caracter)
